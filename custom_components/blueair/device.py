@@ -167,7 +167,7 @@ class BlueairDataUpdateCoordinator(DataUpdateCoordinator):
         """Return the current filter status."""
         if "child_lock" not in self._attribute:
             return None
-        if isinstance(a, bool):
+        if isinstance(self._attribute["child_lock"], bool):
              return bool(self._attribute["child_lock"])
         else:
             return self._attribute["child_lock"] == "1"
