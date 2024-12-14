@@ -167,7 +167,10 @@ class BlueairDataUpdateCoordinator(DataUpdateCoordinator):
         """Return the current filter status."""
         if "child_lock" not in self._attribute:
             return None
-        return bool(self._attribute["child_lock"])
+        if isinstance(a, bool):
+             return bool(self._attribute["child_lock"])
+        else:
+            return self._attribute["child_lock"] == "1"
 
     @property
     def wifi_working(self) -> bool | None:
