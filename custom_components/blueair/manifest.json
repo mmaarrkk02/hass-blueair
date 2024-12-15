@@ -1,15 +1,15 @@
 {
-    "domain": "blueair",
-    "name": "BlueAir",
-    "config_flow": true,
-    "documentation": "https://github.com/mmaarrkk02/hass-blueair/",
-    "issue_tracker": "https://github.com/mmaarrkk02/hass-blueair/issues",
-    "iot_class": "cloud_polling",
-    "requirements": [],
-    "ssdp": [],
-    "zeroconf": [],
-    "homekit": {},
-    "dependencies": [],
-    "codeowners": ["@mmaarrkk02"],
-    "version": "1.2.0"
+  "domain": "blueair",
+  "name": "BlueAir",
+  "codeowners": ["@mmaarrkk02"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/mmaarrkk02/hass-blueair/",
+  "homekit": {},
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/mmaarrkk02/hass-blueair/issues",
+  "requirements": [],
+  "ssdp": [],
+  "version": "1.2.0",
+  "zeroconf": []
 }
