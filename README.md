@@ -1,6 +1,7 @@
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
 [![License][license-shield]](LICENSE)
+
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge)](https://hacs.xyz)
 # Blueair Filter Integration for Home Assistant
 A simple BlueAir sensor and fan integration for HomeAssistant.
@@ -37,3 +38,13 @@ If you have a filter from the [Protect](https://www.blueair.com/us/protect-famil
 ![HASS BlueAir Device](https://raw.githubusercontent.com/mmaarrkk02/hass-blueair/main/device.png)
 
 This project was forked from [aijayadams/hass-blueair](https://github.com/aijayadams/hass-blueair) as the original author has ceased maintaining it. Therefore, modifications have been made independently.
+
+
+***
+
+[commits-shield]: https://img.shields.io/github/commit-activity/y/mmaarrkk02/hass-blueair.svg?style=for-the-badge
+[commits]: https://github.com/mmaarrkk02/hass-blueair/commits/main
+[license-shield]: https://img.shields.io/github/license/mmaarrkk02/hass-blueair.svg?style=for-the-badge
+[maintenance-shield]: https://img.shields.io/badge/maintainer-Bren%20Dahl%20%40dahlb-blue.svg?style=for-the-badge
+[releases-shield]: https://img.shields.io/github/release/mmaarrkk02/hass-blueair.svg?style=for-the-badge
+[releases]: https://github.com/mmaarrkk02/hass-blueair/releases
