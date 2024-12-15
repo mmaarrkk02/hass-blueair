@@ -43,11 +43,11 @@ class BlueAir(object):
     """This class provides API calls to interact with the Blueair API."""
 
     def __init__(
-        self,
-        username: str,
-        password: str,
-        home_host: str = None,
-        auth_token: str = None,
+            self,
+            username: str,
+            password: str,
+            home_host: str = None,
+            auth_token: str = None,
     ) -> None:
         """
         Instantiate a new Blueair client with the provided username and password.
@@ -67,6 +67,12 @@ class BlueAir(object):
 
         if not self.auth_token:
             self.auth_token = self.get_auth_token()
+
+    @property
+    def is_authenticated(self) -> bool:
+        if not self.auth_token:
+            return False
+        return True
 
     def get_home_host(self) -> str:
         """
@@ -99,7 +105,7 @@ class BlueAir(object):
             headers={
                 "X-API-KEY-TOKEN": API_KEY,
                 "Authorization": "Basic "
-                + base64.b64encode(
+                                 + base64.b64encode(
                     (self.username + ":" + self.password).encode()
                 ).decode(),
             },
@@ -210,7 +216,7 @@ class BlueAir(object):
         Set the fan mode to automatic
         """
         if new_mode == None:
-            new_mode="manual"
+            new_mode = "manual"
 
         res = requests.post(
             f"https://{self.home_host}/v2/device/{device_uuid}/attribute/mode/",
@@ -230,7 +236,7 @@ class BlueAir(object):
 
     # Note: refreshes every 5 minutes
     def get_current_data_point(
-        self, device_uuid: str
+            self, device_uuid: str
     ) -> Mapping[str, Union[int, float]]:
         """
         Fetch the most recent data point for the provided device ID.
@@ -249,7 +255,7 @@ class BlueAir(object):
 
     # Note: refreshes every 5 minutes
     def get_data_points_since(
-        self, device_uuid: str, seconds_ago: int = 0, sample_period: int = 0
+            self, device_uuid: str, seconds_ago: int = 0, sample_period: int = 0
     ) -> MeasurementList:
         """
         Fetch the list of data points between a relative timestamp (in seconds) and the current time.
@@ -279,11 +285,11 @@ class BlueAir(object):
     # function more than once per sample period will give the same results, so
     # make sure to throttle these calls to conserve API bandwidth.
     def get_data_points_between(
-        self,
-        device_uuid: str,
-        start_timestamp: int,
-        end_timestamp: int,
-        sample_period: int = 0,
+            self,
+            device_uuid: str,
+            start_timestamp: int,
+            end_timestamp: int,
+            sample_period: int = 0,
     ) -> MeasurementList:
         """
         Fetch the list of data points between two timestamps.

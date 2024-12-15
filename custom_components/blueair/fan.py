@@ -2,7 +2,7 @@
 from homeassistant.components.fan import (
     FanEntity,
     SUPPORT_SET_SPEED,
-    SUPPORT_PRESET_MODE,
+    SUPPORT_PRESET_MODE, ENTITY_ID_FORMAT,
 )
 from homeassistant.util.percentage import (
     int_states_in_range,
@@ -17,7 +17,7 @@ from typing import Any, Optional
 
 from .const import DOMAIN
 from .device import BlueairDataUpdateCoordinator
-from .entity import BlueairEntity
+from .entity import BlueairEntity, generate_custom_entity_id
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -30,7 +30,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         if device.model != 'foobot':
             entities.extend(
                 [
-                    BlueairFan(f"{device.device_name}_fan", device),
+                    BlueairFan(f"{device.device_name}_fan", device,
+                               generate_custom_entity_id(ENTITY_ID_FORMAT, "fan",
+                                                         hass, device.entry_id)),
                 ]
             )
     async_add_entities(entities)
@@ -39,9 +41,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class BlueairFan(BlueairEntity, FanEntity):
     """Controls Fan."""
 
-    def __init__(self, name, device):
+    def __init__(self, name, device, custom_entity_id=None):
         """Initialize the temperature sensor."""
-        super().__init__("Fan", name, device)
+        super().__init__("Fan", name, device, custom_entity_id)
         self._state: float = None
 
     @property
@@ -62,7 +64,7 @@ class BlueairFan(BlueairEntity, FanEntity):
             return int(round(self._device.fan_speed * 33.33, 0))
         else:
             return 0
-    
+
     @property
     def preset_mode(self) -> Optional[str]:
         if self._device.fan_mode_supported:
@@ -72,7 +74,7 @@ class BlueairFan(BlueairEntity, FanEntity):
     def preset_modes(self) -> Optional[list]:
         if self._device.fan_mode_supported:
             return list([str("auto")])
-        
+
     async def async_set_percentage(self, percentage: int) -> None:
         """Sets fan speed percentage."""
         if percentage == 100:

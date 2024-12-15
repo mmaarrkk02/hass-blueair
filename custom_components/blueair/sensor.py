@@ -1,6 +1,6 @@
 """Support for Blueair sensors."""
 from homeassistant.components.sensor import (
-    SensorEntity
+    SensorEntity, ENTITY_ID_FORMAT
 )
 from homeassistant.const import (
     DEVICE_CLASS_CO2,
@@ -13,9 +13,10 @@ from homeassistant.const import (
     TEMP_CELSIUS,
     PERCENTAGE,
 )
+
 from .const import DOMAIN
 from .device import BlueairDataUpdateCoordinator
-from .entity import BlueairEntity
+from .entity import BlueairEntity, generate_custom_entity_id
 
 NAME_TEMPERATURE = "Temperature"
 NAME_HUMIDITY = "Humidity"
@@ -36,18 +37,39 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         else:
             entities.extend(
                 [
-                    BlueairTemperatureSensor(f"{device.device_name}_temperature", device),
-                    BlueairHumiditySensor(f"{device.device_name}_humidity", device),
-                    BlueairCO2Sensor(f"{device.device_name}_co2", device),
-                    BlueairVOCSensor(f"{device.device_name}_voc", device),
-                    BlueairAllPollutionSensor(
-                        f"{device.device_name}_all_pollution", device
-                    ),
-                    BlueairPM1Sensor(f"{device.device_name}_pm1", device),
-                    BlueairPM10Sensor(f"{device.device_name}_pm10", device),
-                    BlueairPM25Sensor(f"{device.device_name}_pm25", device),
+                    BlueairTemperatureSensor(f"{device.device_name}_temperature", device,
+                                             generate_custom_entity_id(ENTITY_ID_FORMAT, "temperature",
+                                                                       hass, device.entry_id)),
+                    BlueairHumiditySensor(f"{device.device_name}_humidity", device,
+                                          generate_custom_entity_id(ENTITY_ID_FORMAT, "humidity",
+                                                                    hass, device.entry_id)),
+                    BlueairCO2Sensor(f"{device.device_name}_co2", device,
+                                     generate_custom_entity_id(ENTITY_ID_FORMAT, "co2",
+                                                               hass, device.entry_id)),
+                    BlueairVOCSensor(f"{device.device_name}_voc", device,
+                                     generate_custom_entity_id(ENTITY_ID_FORMAT, "voc",
+                                                               hass, device.entry_id)),
+                    BlueairAllPollutionSensor(f"{device.device_name}_all_pollution", device,
+                                              generate_custom_entity_id(ENTITY_ID_FORMAT, "all_pollution",
+                                                                        hass, device.entry_id)),
+                    BlueairPM1Sensor(f"{device.device_name}_pm1", device,
+                                     generate_custom_entity_id(ENTITY_ID_FORMAT, "pm1",
+                                                               hass, device.entry_id)),
+                    BlueairPM10Sensor(f"{device.device_name}_pm10", device,
+                                      generate_custom_entity_id(ENTITY_ID_FORMAT, "pm10",
+                                                                hass, device.entry_id)),
+                    BlueairPM25Sensor(f"{device.device_name}_pm25", device,
+                                      generate_custom_entity_id(ENTITY_ID_FORMAT, "pm25",
+                                                                hass, device.entry_id)),
                 ]
             )
+            """The 280i model does not have PM1 and PM10 detection capabilities."""
+            if device.model == "classic_280i":
+                # Remove items that are instances of a particular type (e.g., list)
+                for item in entities[:]:  # Iterate over a copy of the list
+                    if isinstance(item, BlueairPM1Sensor) or isinstance(item, BlueairPM10Sensor):
+                        entities.remove(item)
+
     async_add_entities(entities)
 
 
@@ -57,9 +79,9 @@ class BlueairTemperatureSensor(BlueairEntity, SensorEntity):
     _attr_device_class = DEVICE_CLASS_TEMPERATURE
     _attr_native_unit_of_measurement = TEMP_CELSIUS
 
-    def __init__(self, name, device):
+    def __init__(self, name, device, custom_entity_id=None):
         """Initialize the temperature sensor."""
-        super().__init__(NAME_TEMPERATURE, name, device)
+        super().__init__(NAME_TEMPERATURE, name, device, custom_entity_id)
         self._state: float = None
 
     @property
@@ -76,9 +98,9 @@ class BlueairHumiditySensor(BlueairEntity, SensorEntity):
     _attr_device_class = DEVICE_CLASS_HUMIDITY
     _attr_native_unit_of_measurement = PERCENTAGE
 
-    def __init__(self, name, device):
+    def __init__(self, name, device, custom_entity_id=None):
         """Initialize the humidity sensor."""
-        super().__init__(NAME_HUMIDITY, name, device)
+        super().__init__(NAME_HUMIDITY, name, device, custom_entity_id)
         self._state: float = None
 
     @property
@@ -95,9 +117,9 @@ class BlueairCO2Sensor(BlueairEntity, SensorEntity):
     _attr_device_class = DEVICE_CLASS_CO2
     _attr_native_unit_of_measurement = "ppm"
 
-    def __init__(self, name, device):
+    def __init__(self, name, device, custom_entity_id=None):
         """Initialize the CO2 sensor."""
-        super().__init__("co2", name, device)
+        super().__init__("co2", name, device, custom_entity_id)
         self._state: float = None
 
     @property
@@ -114,9 +136,9 @@ class BlueairVOCSensor(BlueairEntity, SensorEntity):
     _attr_device_class = DEVICE_CLASS_VOLATILE_ORGANIC_COMPOUNDS
     _attr_native_unit_of_measurement = "ppb"
 
-    def __init__(self, name, device):
+    def __init__(self, name, device, custom_entity_id=None):
         """Initialize the VOC sensor."""
-        super().__init__("voc", name, device)
+        super().__init__("voc", name, device, custom_entity_id)
         self._state: float = None
 
     @property
@@ -132,9 +154,9 @@ class BlueairAllPollutionSensor(BlueairEntity, SensorEntity):
     """The API returns the unit for this measurement as as % """
     _attr_native_unit_of_measurement = "%"
 
-    def __init__(self, name, device):
+    def __init__(self, name, device, custom_entity_id=None):
         """Initialize the all pollution sensor."""
-        super().__init__("all_pollution", name, device)
+        super().__init__("all_pollution", name, device, custom_entity_id)
         self._state: float = None
         self._attr_icon = "mdi:molecule"
 
@@ -152,9 +174,9 @@ class BlueairPM1Sensor(BlueairEntity, SensorEntity):
     _attr_device_class = DEVICE_CLASS_PM1
     _attr_native_unit_of_measurement = "µg/m³"
 
-    def __init__(self, name, device):
+    def __init__(self, name, device, custom_entity_id=None):
         """Initialize the pm1 sensor."""
-        super().__init__("pm1", name, device)
+        super().__init__("pm1", name, device, custom_entity_id)
         self._state: float = None
 
     @property
@@ -171,9 +193,9 @@ class BlueairPM10Sensor(BlueairEntity, SensorEntity):
     _attr_device_class = DEVICE_CLASS_PM10
     _attr_native_unit_of_measurement = "µg/m³"
 
-    def __init__(self, name, device):
+    def __init__(self, name, device, custom_entity_id=None):
         """Initialize the pm10 sensor."""
-        super().__init__("pm10", name, device)
+        super().__init__("pm10", name, device, custom_entity_id)
         self._state: float = None
 
     @property
@@ -190,9 +212,9 @@ class BlueairPM25Sensor(BlueairEntity, SensorEntity):
     _attr_device_class = DEVICE_CLASS_PM25
     _attr_native_unit_of_measurement = "µg/m³"
 
-    def __init__(self, name, device):
+    def __init__(self, name, device, custom_entity_id=None):
         """Initialize the pm25 sensor."""
-        super().__init__("pm25", name, device)
+        super().__init__("pm25", name, device, custom_entity_id)
         self._state: float = None
 
     @property

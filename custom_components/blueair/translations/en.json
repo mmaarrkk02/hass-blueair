@@ -1,20 +1,26 @@
 {
-    "config": {
-        "abort": {
-            "already_configured": "Device is already configured"
-        },
-        "error": {
-            "cannot_connect": "Failed to connect",
-            "invalid_auth": "Invalid authentication",
-            "unknown": "Unexpected error"
-        },
-        "step": {
-            "user": {
-                "data": {
-                    "password": "Password",
-                    "username": "Username"
-                }
-            }
+  "config": {
+    "abort": {
+      "already_configured": "Device is already configured"
+    },
+    "error": {
+      "cannot_connect": "Failed to connect",
+      "invalid_auth": "Invalid authentication",
+      "unknown": "Unexpected error"
+    },
+    "step": {
+      "user": {
+        "data": {
+          "password": "Password",
+          "username": "Username",
+          "custom_device_id": "Custom Device Id",
+          "prefix_device_name": "Add the blueair before the device name."
         }
+      },
+      "custom_device_id": {
+        "title": "Configure Device Id",
+        "description": "Fill in the device ids. (If not filled in, the system will generate)"
+      }
     }
+  }
 }

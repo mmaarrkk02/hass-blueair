@@ -1,5 +1,6 @@
 """Blueair device object."""
 import asyncio
+import logging
 from datetime import datetime, timedelta
 from typing import Any
 from async_timeout import timeout
@@ -14,18 +15,20 @@ import homeassistant.util.dt as dt_util
 
 from .const import DOMAIN, LOGGER
 
+_LOGGER = logging.getLogger(__name__)
+
 
 class BlueairDataUpdateCoordinator(DataUpdateCoordinator):
     """Blueair device object."""
 
-    def __init__(
-            self, hass: HomeAssistant, api_client: API, uuid: str, device_name: str,
-            mac: str = None,
-    ) -> None:
+    def __init__(self, hass: HomeAssistant, api_client: API, uuid: str, device_name: str, mac: str = None,
+                 entry_id: str = None, is_prefix_device_name=True) -> None:
         """Initialize the device."""
         self.hass: HomeAssistant = hass
         self.api_client: API = api_client
         self._uuid: str = uuid
+        self._entry_id: str = entry_id
+        _LOGGER.debug(f"Custom entity id {entry_id} on {device_name}")
         self._name: str = device_name
         self.mac = mac
         self._manufacturer: str = "BlueAir"
@@ -33,10 +36,14 @@ class BlueairDataUpdateCoordinator(DataUpdateCoordinator):
         self._datapoint: dict[str, Any] = {}
         self._attribute: dict[str, Any] = {}
 
+        if is_prefix_device_name:
+            name = f"{DOMAIN}-{device_name}"
+        else:
+            name = device_name
         super().__init__(
             hass,
             LOGGER,
-            name=f"{DOMAIN}-{device_name}",
+            name=name,
             update_interval=timedelta(seconds=60),
         )
 
@@ -52,6 +59,11 @@ class BlueairDataUpdateCoordinator(DataUpdateCoordinator):
     def id(self) -> str:
         """Return Blueair device id."""
         return self._uuid
+
+    @property
+    def entry_id(self) -> str:
+        """Return Blueair entry id."""
+        return self._entry_id
 
     @property
     def device_name(self) -> str:
@@ -168,7 +180,7 @@ class BlueairDataUpdateCoordinator(DataUpdateCoordinator):
         if "child_lock" not in self._attribute:
             return None
         if isinstance(self._attribute["child_lock"], bool):
-             return bool(self._attribute["child_lock"])
+            return bool(self._attribute["child_lock"])
         else:
             return self._attribute["child_lock"] == "1"
 

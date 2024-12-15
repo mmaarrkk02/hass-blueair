@@ -1,10 +1,10 @@
 from .const import DOMAIN
 from .device import BlueairDataUpdateCoordinator
-from .entity import BlueairEntity
+from .entity import BlueairEntity, generate_custom_entity_id
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
     ColorMode,
-    LightEntity,
+    LightEntity, ENTITY_ID_FORMAT,
 )
 
 
@@ -23,7 +23,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         else:
             entities.extend(
                 [
-                    BlueairLightEntity(f"{device.device_name}_light", device),
+                    BlueairLightEntity(f"{device.device_name}_light", device,
+                                             generate_custom_entity_id(ENTITY_ID_FORMAT, "light",
+                                                                       hass, device.entry_id)),
                 ]
             )
     async_add_entities(entities)
@@ -33,8 +35,8 @@ class BlueairLightEntity(BlueairEntity, LightEntity):
     _attr_color_mode = ColorMode.BRIGHTNESS
     _attr_supported_color_modes = {ColorMode.BRIGHTNESS}
 
-    def __init__(self, name, device):
-        super().__init__("LED Light", name, device)
+    def __init__(self, name, device, custom_entity_id=None):
+        super().__init__("LED Light", name, device, custom_entity_id)
 
     @property
     def brightness(self) -> int | None:

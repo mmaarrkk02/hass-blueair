@@ -28,7 +28,7 @@ I'm relatively confident we are correctly supporting
 
 Other classic, and classic i models should be similar enough that I would expect them to work (Classic 480i, Classic 505 etc.).
 
-If you have a filter from the [Protect](https://www.blueair.com/us/protect-family.html), [Dust Magnet](https://www.blueair.com/us/dustmagnet-family.html) or [Blue](https://www.blueair.com/us/blue-family.html) product lines (I'm not even sure if these are all connected devices) and are willing to share API responses and help up build support for these products please feel free to open an [Issue](https://github.com/aijayadams/hass-blueair/issues) :)
+If you have a filter from the [Protect](https://www.blueair.com/us/protect-family.html), [Dust Magnet](https://www.blueair.com/us/dustmagnet-family.html) or [Blue](https://www.blueair.com/us/blue-family.html) product lines (I'm not even sure if these are all connected devices) and are willing to share API responses and help up build support for these products please feel free to open an [Issue](https://github.com/mmaarrkk02/hass-blueair/issues) :)
 
 
-![HASS BlueAir Device](https://raw.githubusercontent.com/aijayadams/hass-blueair/main/device.png)
+![HASS BlueAir Device](https://raw.githubusercontent.com/mmaarrkk02/hass-blueair/main/device.png)
