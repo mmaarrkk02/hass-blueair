@@ -1,19 +1,10 @@
 """Support for Blueair fans."""
+from typing import Any, Optional
+
 from homeassistant.components.fan import (
     FanEntity,
-    SUPPORT_SET_SPEED,
-    SUPPORT_PRESET_MODE, ENTITY_ID_FORMAT,
+    ENTITY_ID_FORMAT, FanEntityFeature,
 )
-from homeassistant.util.percentage import (
-    int_states_in_range,
-    ranged_value_to_percentage,
-    percentage_to_ranged_value,
-)
-from homeassistant.const import (
-    PERCENTAGE,
-)
-
-from typing import Any, Optional
 
 from .const import DOMAIN
 from .device import BlueairDataUpdateCoordinator
@@ -50,8 +41,8 @@ class BlueairFan(BlueairEntity, FanEntity):
     def supported_features(self) -> int:
         # If the fan_mode property is supported, enable support for presets
         if self._device.fan_mode_supported:
-            return SUPPORT_SET_SPEED + SUPPORT_PRESET_MODE
-        return SUPPORT_SET_SPEED
+            return FanEntityFeature.SET_SPEED + FanEntityFeature.PRESET_MODE
+        return FanEntityFeature.SET_SPEED
 
     @property
     def is_on(self) -> int:
