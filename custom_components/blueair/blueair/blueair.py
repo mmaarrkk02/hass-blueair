@@ -234,6 +234,26 @@ class BlueAir(object):
             },
         )
 
+    def set_child_lock(self, device_uuid, child_lock):
+        """
+        Set the child lock
+        """
+        res = requests.post(
+            f"https://{self.home_host}/v2/device/{device_uuid}/attribute/childlock/",
+            headers={
+                "Content-Type": "application/json",
+                "X-API-KEY-TOKEN": API_KEY,
+                "X-AUTH-TOKEN": self.auth_token,
+            },
+            json={
+                "currentValue": child_lock,
+                "scope": "device",
+                "defaultValue": child_lock,
+                "name": "child_lock",
+                "uuid": device_uuid,
+            },
+        )
+
     # Note: refreshes every 5 minutes
     def get_current_data_point(
             self, device_uuid: str

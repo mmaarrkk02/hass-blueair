@@ -219,6 +219,21 @@ class BlueairDataUpdateCoordinator(DataUpdateCoordinator):
         self._attribute["mode"] = new_mode
         await self.async_refresh()
 
+    async def set_child_lock(self, new_value: bool) -> None:
+        if isinstance(self._attribute["child_lock"], bool):
+            await self.hass.async_add_executor_job(
+                lambda: self.api_client.set_child_lock(self.id, new_value)
+            )
+            self._attribute["child_lock"] = new_value
+            await self.async_refresh()
+        else:
+            attrValue = "1" if new_value else "0"
+            await self.hass.async_add_executor_job(
+                lambda: self.api_client.set_child_lock(self.id, attrValue)
+            )
+            self._attribute["child_lock"] = attrValue
+            await self.async_refresh()
+
     async def _update_device(self, *_) -> None:
         """Update the device information from the API."""
         LOGGER.info(self._name)
