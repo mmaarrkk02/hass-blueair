@@ -1,5 +1,6 @@
 """Support for Blueair fans."""
-from typing import Any, Optional
+import logging
+from typing import Any, Optional, overload
 
 from homeassistant.components.fan import (
     FanEntity,
@@ -9,6 +10,8 @@ from homeassistant.components.fan import (
 from .const import DOMAIN
 from .device import BlueairDataUpdateCoordinator
 from .entity import BlueairEntity, generate_custom_entity_id
+
+_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -82,8 +85,22 @@ class BlueairFan(BlueairEntity, FanEntity):
     async def async_turn_off(self, **kwargs: Any) -> None:
         await self._device.set_fan_speed("0")
 
+    @overload
     async def async_turn_on(self, **kwargs: Any) -> None:
         await self._device.set_fan_speed("2")
+
+    async def async_turn_on(self, percentage: int | None = None, preset_mode: str | None = None, **kwargs: Any) -> None:
+        """Handle turning on the fan."""
+        _LOGGER.debug("Turning on fan. percentage:{}, preset_mode:{}".format(percentage, preset_mode))
+        # 如果傳遞了 percentage，設置風扇的轉速
+        if percentage is not None:
+            await self.async_set_percentage(percentage)
+        else:
+            await self._device.set_fan_speed("2")
+
+        # 如果傳遞了 preset_mode，設置風扇的模式
+        if preset_mode is not None:
+            await self.async_set_preset_mode(preset_mode)
 
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         await self._device.set_fan_mode(preset_mode)
