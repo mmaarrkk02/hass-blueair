@@ -41,7 +41,7 @@ class BlueairFan(BlueairEntity, FanEntity):
     def supported_features(self) -> int:
         # If the fan_mode property is supported, enable support for presets
         if self._device.fan_mode_supported:
-            return FanEntityFeature.SET_SPEED + FanEntityFeature.PRESET_MODE + FanEntityFeature.TURN_ON + FanEntityFeature.TURN_OFF
+            return FanEntityFeature.SET_SPEED | FanEntityFeature.PRESET_MODE | FanEntityFeature.TURN_ON | FanEntityFeature.TURN_OFF
         return FanEntityFeature.SET_SPEED
 
     @property
