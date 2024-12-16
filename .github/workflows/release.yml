@@ -33,14 +33,6 @@ jobs:
           toTag: ${{ steps.previousTag.outputs.previousTag }}
           includeInvalidCommits: true
 
-      - name: Get full change log
-        id: fullChangeLog
-        run: |
-          # Build the full changelog URL
-          fullChangeLog="\n\n:label: **Full Changelog**: https://github.com/mmaarrkk02/hass-blueair/compare/${{ steps.previousTag.outputs.previousTag }}...${{ github.ref_name }}"
-          # Write the changelog to the environment variable
-          echo "fullChangeLog=$fullChangeLog" >> $GITHUB_OUTPUT
-
       - name: Create Release
         uses: ncipollo/release-action@v1.12.0
         with:
@@ -48,5 +40,5 @@ jobs:
           draft: false
           makeLatest: true
           name: ${{ github.ref_name }}
-          body: ${{ steps.changelog.outputs.changes }}${{ steps.fullChangeLog.outputs.fullChangeLog }}
+          body: ${{ steps.changelog.outputs.changes }}
           token: ${{ github.token }}
